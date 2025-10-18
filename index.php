@@ -15,7 +15,7 @@
     .animated-gradient {
       background: linear-gradient(135deg, #991b1b 0%, #dc2626 50%, #f87171 100%);
       background-size: 200% 200%;
-      animation: gradientMove 20s ease-in-out infinite;
+      animation: gradientMove 30s ease-in-out infinite;
     }
     @keyframes gradientMove {
       0% { background-position: 0% 50%; }
