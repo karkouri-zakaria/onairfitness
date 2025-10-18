@@ -132,10 +132,11 @@
     const indicator = document.getElementById('indicator');
     spinButton.addEventListener('click', () => {
       if (spinning) return;
-      spinning = true;
-      spinButton.disabled = true;
-  resultDiv.textContent = '';
-  resultDiv.classList.remove('result-animate');
+    spinning = true;
+    spinButton.textContent = 'Stop';
+    spinButton.disabled = true;
+    resultDiv.textContent = '';
+    resultDiv.classList.remove('result-animate');
       const winnerIndex = getRandomPrize();
       let centerAngle = (sliceAngle / 2) + (sliceAngle * winnerIndex);
       centerAngle += (Math.random() - 0.5) * sliceAngle;
@@ -150,8 +151,9 @@
       indicatorContainer.style.transition = `transform ${duration}s ease-out`;
       indicatorContainer.style.transform = `rotate(${totalRotation}deg)`;
       indicatorContainer.addEventListener('transitionend', () => {
-        spinning = false;
-        spinButton.disabled = false;
+  spinning = false;
+  spinButton.textContent = 'Lancer';
+  spinButton.disabled = false;
         currentRotation = totalRotation % 360;
         indicatorContainer.style.transition = 'transform 0s';
         indicatorContainer.style.transform = `rotate(${currentRotation}deg)`;
