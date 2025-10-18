@@ -14,6 +14,17 @@
     .result-animate {
       animation: resultFadeIn 0.8s cubic-bezier(0.23, 1, 0.32, 1);
     }
+    #spin, #spin:disabled {
+      cursor: pointer !important;
+    }
+      #spin:active, #spin.clicked {
+        animation: spinClick 0.18s cubic-bezier(0.4,0,0.2,1);
+      }
+      @keyframes spinClick {
+        0% { transform: scale(1); }
+        50% { transform: scale(0.92); }
+        100% { transform: scale(1); }
+      }
     @keyframes resultFadeIn {
       0% {
         opacity: 0;
@@ -43,7 +54,7 @@
       <div id="indicator" class="absolute top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[12px] border-r-[12px] border-b-[20px] border-l-transparent border-r-transparent border-b-[#FFD700] glow"></div>
     </div>
   </div>
-<button id="spin" class="mt-14 text-3xl px-16 py-1 bg-[#FFD700] text-black font-bold rounded-full hover:bg-[#FFC300] transition-colors z-10">Lancer</button>
+<button id="spin" class="mt-14 text-3xl px-16 py-1 bg-[#FFD700] text-black font-bold rounded-full hover:bg-[#FFC300] transition-colors z-10 cursor-pointer">Lancer</button>
   <div id="result" class="mt-4 text-xl font-semibold text-center z-10"></div>
 
   <script>
@@ -132,6 +143,9 @@
     const indicator = document.getElementById('indicator');
     spinButton.addEventListener('click', () => {
       if (spinning) return;
+    // Add click animation
+    spinButton.classList.add('clicked');
+    setTimeout(() => spinButton.classList.remove('clicked'), 180);
     spinning = true;
     spinButton.textContent = 'Stop';
     spinButton.disabled = true;
