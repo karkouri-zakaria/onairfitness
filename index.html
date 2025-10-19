@@ -12,16 +12,14 @@
 		<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
   <style>
     /* Animated gradient background */
-    .animated-gradient {
-      background: linear-gradient(135deg, #991b1b 0%, #dc2626 50%, #f87171 100%);
-      background-size: 200% 200%;
-      animation: gradientMove 20s ease-in-out infinite;
+    body {
+      background-image: url('https://t3.ftcdn.net/jpg/09/56/94/66/240_F_956946677_weVJRUpNcRQcydJCh4h10zzNhq3dvUtb.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed; /* Keeps it stable on scroll if needed */
     }
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+
     .result-animate {
       animation: resultFadeIn 0.8s cubic-bezier(0.23, 1, 0.32, 1);
     }
@@ -54,7 +52,7 @@
 </head>
 <body class="bg-black text-white flex flex-col items-center justify-center h-screen font-saira min-h-screen overflow-hidden">
   <!-- Gradient overlay -->
-  <div class="fixed inset-0 pointer-events-none z-0 opacity-40 animated-gradient"></div>
+  <div class="fixed inset-0 pointer-events-none z-0 opacity-60 bg-black"></div>
   <img src="assets/images/logo.png" alt="On Air Fitness Logo" class="mb-14 w-48 md:w-64 z-10">
   <div id="wheel-container" class="relative w-80 h-80 md:w-1/2 md:h-1/2 z-10">
     <svg id="wheel" class="absolute w-full h-full" viewBox="0 0 100 100">
