@@ -77,123 +77,144 @@
   { name: "1 mois offert", prob: 0.01 },
   { name: "Protein drink", prob: 0.10 },
   { name: "Oups !", prob: 0.60 },
-    ];
-    const colors = ['#87221d', '#bf0007', '#5c1b18', '#fc002f'];
-    const numSlices = prizes.length;
-    const sliceAngle = 360 / numSlices;
-    const svgNS = "http://www.w3.org/2000/svg";
-    const centerX = 50, centerY = 50, radius = 48;
+];
+const colors = ['#87221d', '#bf0007', '#5c1b18', '#fc002f'];
+const numSlices = prizes.length;
+const sliceAngle = 360 / numSlices;
+const svgNS = "http://www.w3.org/2000/svg";
+const centerX = 50, centerY = 50, radius = 48;
 
-    let currentRotation = 0;
-    let spinning = false;
+let currentRotation = 0;
+let spinning = false;
+let animationFrameId = null;
+let lastTimestamp = null;
 
-    function createSector(cx, cy, r, startAngle, endAngle, color) {
-      const x1 = cx + r * Math.cos(startAngle * Math.PI / 180);
-      const y1 = cy + r * Math.sin(startAngle * Math.PI / 180);
-      const x2 = cx + r * Math.cos(endAngle * Math.PI / 180);
-      const y2 = cy + r * Math.sin(endAngle * Math.PI / 180);
-      const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
-      const path = document.createElementNS(svgNS, 'path');
-      path.setAttribute('d', `M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArc},1 ${x2},${y2} Z`);
-      path.setAttribute('fill', color);
-      return path;
+function createSector(cx, cy, r, startAngle, endAngle, color) {
+  const x1 = cx + r * Math.cos(startAngle * Math.PI / 180);
+  const y1 = cy + r * Math.sin(startAngle * Math.PI / 180);
+  const x2 = cx + r * Math.cos(endAngle * Math.PI / 180);
+  const y2 = cy + r * Math.sin(endAngle * Math.PI / 180);
+  const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
+  const path = document.createElementNS(svgNS, 'path');
+  path.setAttribute('d', `M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArc},1 ${x2},${y2} Z`);
+  path.setAttribute('fill', color);
+  return path;
+}
+
+function createText(cx, cy, r, angle, textContent) {
+  const text = document.createElementNS(svgNS, 'text');
+  const rad = angle * Math.PI / 180;
+  const x = cx + (r * 0.7) * Math.cos(rad);
+  const y = cy + (r * 0.7) * Math.sin(rad);
+  text.setAttribute('x', x);
+  text.setAttribute('y', y);
+  text.setAttribute('text-anchor', 'middle');
+  text.setAttribute('fill', 'white');
+  text.setAttribute('font-size', '4.7');
+  const parts = textContent.split('/');
+  const lineHeight = 1.1;
+  let dy = - (parts.length - 1) * lineHeight / 2;
+  for (let part of parts) {
+    const tspan = document.createElementNS(svgNS, 'tspan');
+    tspan.setAttribute('x', x);
+    tspan.setAttribute('dy', `${dy}em`);
+    tspan.textContent = part.trim();
+    text.appendChild(tspan);
+    dy = lineHeight;
+  }
+  return text;
+}
+
+// Initialize wheel
+const svg = document.getElementById('wheel');
+let startAngle = 0;
+for (let i = 0; i < numSlices; i++) {
+  const endAngle = startAngle + sliceAngle;
+  const color = colors[i % colors.length];
+  const sector = createSector(centerX, centerY, radius, startAngle, endAngle, color);
+  svg.appendChild(sector);
+  const centerAngle = startAngle + sliceAngle / 2;
+  const text = createText(centerX, centerY, radius, centerAngle, prizes[i].name);
+  svg.appendChild(text);
+  startAngle = endAngle;
+}
+
+function getRandomPrize() {
+  const rand = Math.random();
+  let cumulative = 0;
+  for (let i = 0; i < prizes.length; i++) {
+    cumulative += prizes[i].prob;
+    if (rand < cumulative) {
+      return i;
     }
+  }
+  return prizes.length - 1;
+}
 
-    function createText(cx, cy, r, angle, textContent) {
-      const text = document.createElementNS(svgNS, 'text');
-      const rad = angle * Math.PI / 180;
-      const x = cx + (r * 0.7) * Math.cos(rad);
-      const y = cy + (r * 0.7) * Math.sin(rad);
-      text.setAttribute('x', x);
-      text.setAttribute('y', y);
-      text.setAttribute('text-anchor', 'middle');
-      text.setAttribute('fill', 'white');
-      text.setAttribute('font-size', '4.7');
-      const parts = textContent.split('/');
-      const lineHeight = 1.1;
-      let dy = - (parts.length - 1) * lineHeight / 2;
-      for (let part of parts) {
-        const tspan = document.createElementNS(svgNS, 'tspan');
-        tspan.setAttribute('x', x);
-        tspan.setAttribute('dy', `${dy}em`);
-        tspan.textContent = part.trim();
-        text.appendChild(tspan);
-        dy = lineHeight;
-      }
-      return text;
-    }
+function continuousSpin(timestamp) {
+  if (!lastTimestamp) lastTimestamp = timestamp;
+  const deltaTime = (timestamp - lastTimestamp) / 1000; // Time in seconds
+  const rotationSpeed = 720; // Degrees per second, increased for testing
+  currentRotation += rotationSpeed * deltaTime;
+  indicatorContainer.style.transform = `rotate(${currentRotation}deg)`;
+  lastTimestamp = timestamp;
+  if (spinning) {
+    animationFrameId = requestAnimationFrame(continuousSpin);
+  }
+}
 
-    // Initialize wheel
-    const svg = document.getElementById('wheel');
-    let startAngle = 0;
-    for (let i = 0; i < numSlices; i++) {
-      const endAngle = startAngle + sliceAngle;
-      const color = colors[i % colors.length];
-      const sector = createSector(centerX, centerY, radius, startAngle, endAngle, color);
-      svg.appendChild(sector);
-      const centerAngle = startAngle + sliceAngle / 2;
-      const text = createText(centerX, centerY, radius, centerAngle, prizes[i].name);
-      svg.appendChild(text);
-      startAngle = endAngle;
-    }
+const spinButton = document.getElementById('spin');
+const resultDiv = document.getElementById('result');
+const indicatorContainer = document.getElementById('indicator-container');
 
-    function getRandomPrize() {
-      const rand = Math.random();
-      let cumulative = 0;
-      for (let i = 0; i < prizes.length; i++) {
-        cumulative += prizes[i].prob;
-        if (rand < cumulative) {
-          return i;
-        }
-      }
-      return prizes.length - 1;
-    }
+spinButton.addEventListener('click', () => {
+  // Add click animation
+  spinButton.classList.add('clicked');
+  setTimeout(() => spinButton.classList.remove('clicked'), 180);
 
-    const spinButton = document.getElementById('spin');
-    const resultDiv = document.getElementById('result');
-    const indicatorContainer = document.getElementById('indicator-container');
-    const indicator = document.getElementById('indicator');
-    spinButton.addEventListener('click', () => {
-      if (spinning) return;
-    // Add click animation
-    spinButton.classList.add('clicked');
-    setTimeout(() => spinButton.classList.remove('clicked'), 180);
+  if (!spinning) {
+    // Start continuous spinning
     spinning = true;
     spinButton.textContent = 'Stop';
-    spinButton.disabled = true;
     resultDiv.textContent = '';
     resultDiv.classList.remove('result-animate');
-      const winnerIndex = getRandomPrize();
-      let centerAngle = (sliceAngle / 2) + (sliceAngle * winnerIndex);
-      centerAngle += (Math.random() - 0.5) * sliceAngle;
-      let finalDeg = ((centerAngle - 270) % 360 + 360) % 360;
-      const fullRotations = 5 + Math.floor(Math.random() * 3);
-      const additionalFull = 360 * fullRotations;
-      const currentRotMod = currentRotation % 360;
-      const additionalToTarget = (finalDeg - currentRotMod + 360) % 360;
-      const totalAdditional = additionalFull + additionalToTarget;
-      const totalRotation = currentRotation + totalAdditional;
-      const duration = 3 + Math.random() * 3;
-      indicatorContainer.style.transition = `transform ${duration}s ease-out`;
-      indicatorContainer.style.transform = `rotate(${totalRotation}deg)`;
-      indicatorContainer.addEventListener('transitionend', () => {
-  spinning = false;
-  spinButton.textContent = 'Lancer';
-  spinButton.disabled = false;
-        currentRotation = totalRotation % 360;
-        indicatorContainer.style.transition = 'transform 0s';
-        indicatorContainer.style.transform = `rotate(${currentRotation}deg)`;
-        if (prizes[winnerIndex].name === "Oups !") {
-          resultDiv.textContent = `😢 Oups ! Pas de chance !`;
-        } else {
-          resultDiv.textContent = `🎉 Vous avez gagné : ${prizes[winnerIndex].name}`;
-        }
-        resultDiv.classList.add('result-animate');
-        setTimeout(() => {
-          resultDiv.classList.remove('result-animate');
-        }, 900);
-      }, { once: true });
-    });
+    lastTimestamp = null;
+    animationFrameId = requestAnimationFrame(continuousSpin);
+  } else {
+    // Stop spinning and transition to target
+    cancelAnimationFrame(animationFrameId);
+    spinning = false;
+    spinButton.textContent = 'Lancer';
+    const winnerIndex = getRandomPrize();
+    let centerAngle = (sliceAngle / 2) + (sliceAngle * winnerIndex);
+    centerAngle += (Math.random() - 0.5) * sliceAngle;
+    let finalDeg = ((centerAngle - 270) % 360 + 360) % 360;
+    const fullRotations = 3 + Math.floor(Math.random() * 3);
+    const additionalFull = 360 * fullRotations;
+    const currentRotMod = currentRotation % 360;
+    const additionalToTarget = (finalDeg - currentRotMod + 360) % 360;
+    const totalAdditional = additionalFull + additionalToTarget;
+    const totalRotation = currentRotation + totalAdditional;
+    const rotationSpeed = 400; // Degrees per second, matches continuous spin
+    const duration = Math.max(totalAdditional / rotationSpeed, 1); // Minimum 3 seconds
+    indicatorContainer.style.transition = `transform ${duration}s ease-out`;
+    indicatorContainer.style.transform = `rotate(${totalRotation}deg)`;
+    indicatorContainer.addEventListener('transitionend', () => {
+      currentRotation = totalRotation % 360;
+      indicatorContainer.style.transition = 'transform 0s';
+      indicatorContainer.style.transform = `rotate(${currentRotation}deg)`;
+      if (prizes[winnerIndex].name === "Oups !") {
+        resultDiv.textContent = `😢 Oups ! Pas de chance !`;
+      } else {
+        resultDiv.textContent = `🎉 Vous avez gagné : ${prizes[winnerIndex].name}`;
+      }
+      resultDiv.classList.add('result-animate');
+      setTimeout(() => {
+        resultDiv.classList.remove('result-animate');
+      }, 900);
+    }, { once: true });
+  }
+});
   </script>
 </body>
 </html>
