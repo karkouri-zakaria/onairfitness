@@ -60,7 +60,10 @@
   <circle cx="50" cy="50" r="48" stroke="white" stroke-width="2" fill="none" />
   </svg>
   <div id="indicator-container" class="absolute inset-0" style="transform-origin: 50% 50%;">
-    <div id="indicator" class="absolute top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[12px] border-r-[12px] border-b-[20px] border-l-transparent border-r-transparent border-b-white glow"></div>
+    <div id="indicator">
+      <div class="absolute top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[12px] border-r-[12px] border-b-[20px] border-l-transparent border-r-transparent border-b-white glow"></div>
+      <img src="assets/images/logo.png" class="absolute top-7 left-1/2 transform -translate-x-1/2 w-14"></img>
+    </div>
   </div>
   </div>
 <button id="spin" class="mt-14 text-3xl px-16 py-1 bg-white text-espresso font-semibold rounded-full hover:bg-gray-100 transition-colors z-10 cursor-pointer">Lancer</button>
