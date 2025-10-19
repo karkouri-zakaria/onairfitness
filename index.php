@@ -57,7 +57,7 @@
   <div id="wheel-container" class="relative w-80 h-80 md:w-1/2 md:h-1/2 z-10">
     <svg id="wheel" class="absolute w-full h-full" viewBox="0 0 100 100">
       <!-- Thick black border -->
-  <circle cx="50" cy="50" r="48" stroke="white" stroke-width="2" fill="none" />
+  <circle cx="50" cy="50" r="48" stroke="white" stroke-width="2" fill="none" stroke-dasharray="1" />
   </svg>
   <div id="indicator-container" class="absolute inset-0" style="transform-origin: 50% 50%;">
     <div id="indicator">
