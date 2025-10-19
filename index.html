@@ -63,7 +63,7 @@
       <div id="indicator" class="absolute top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[12px] border-r-[12px] border-b-[20px] border-l-transparent border-r-transparent border-b-[#FFD700] glow"></div>
     </div>
   </div>
-<button id="spin" class="mt-14 text-3xl px-16 py-1 bg-[#FFD700] text-black font-bold rounded-full hover:bg-[#FFC300] transition-colors z-10 cursor-pointer">Lancer</button>
+<button id="spin" class="mt-14 text-3xl px-12 py-1 bg-[#FFD700] text-black font-semibold rounded-full hover:bg-[#FFC300] transition-colors z-10 cursor-pointer">Lancer</button>
   <div id="result" class="mt-4 text-xl font-semibold text-center z-10"></div>
 
   <script>
