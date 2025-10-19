@@ -60,8 +60,8 @@
 			</svg>
 			<div id="indicator-container" class="absolute inset-0" style="transform-origin: 50% 50%;">
 				<div id="indicator">
-					<div class="absolute top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[12px] border-r-[12px] border-b-[20px] border-l-transparent border-r-transparent border-b-white glow"></div>
-					<img src="assets/images/logo.png" class="absolute top-7 left-1/2 transform -translate-x-1/2 w-14"></img>
+					<img src="assets/images/indicator.svg" class="absolute top-3 left-1/2 transform -translate-x-1/2 w-8 glow"></img>
+					
 				</div>
 			</div>
 		</div>
