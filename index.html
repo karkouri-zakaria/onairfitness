@@ -60,8 +60,7 @@
 			</svg>
 			<div id="indicator-container" class="absolute inset-0" style="transform-origin: 50% 50%;">
 				<div id="indicator">
-					<img src="assets/images/indicator.svg" class="absolute top-3 left-1/2 transform -translate-x-1/2 w-8 glow"></img>
-					
+					<img src="assets/images/indicator.svg" class="absolute top-3 left-1/2 transform -translate-x-1/2 w-6 glow"></img>
 				</div>
 			</div>
 		</div>
@@ -71,9 +70,9 @@
 			const prizes = [
 			  { name: "Gourde / Serviette", prob: 0.05 },
 			  { name: "Café / Bouteille d’eau", prob: 0.20 },
-			  { name: "Tshirt On Air", prob: 0.04 },
-			  { name: "1 mois offert", prob: 0.01 },
-			  { name: "Protein drink", prob: 0.10 },
+			  { name: "Tshirt / On Air", prob: 0.04 },
+			  { name: "1 mois / offert", prob: 0.01 },
+			  { name: "Protein / drink", prob: 0.10 },
 			  { name: "Oups !", prob: 0.60 },
 			];
 			const colors = ['#87221d', '#bf0007', '#5c1b18', '#fc002f'];
@@ -202,7 +201,7 @@
 			      indicatorContainer.style.transition = 'transform 0s';
 			      indicatorContainer.style.transform = `rotate(${currentRotation}deg)`;
 			      if (prizes[winnerIndex].name === "Oups !") {
-			        resultDiv.textContent = `😢 Oups ! Pas de chance !`;
+			        resultDiv.textContent = `🙁 Oups ! Pas de chance !`;
 			      } else {
 			        resultDiv.textContent = `🎉 Vous avez gagné : ${prizes[winnerIndex].name}`;
 			      }
