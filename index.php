@@ -65,7 +65,7 @@
 				</div>
 			</div>
 		</div>
-		<button id="spin" class="mt-14 text-3xl min-w-[200px] py-1 bg-white text-espresso font-semibold rounded-full hover:bg-gray-100 transition-colors z-10 cursor-pointer">Lancer</button>
+		<button id="spin" class="mt-14 text-3xl min-w-52 py-1 bg-white text-espresso font-semibold rounded-full hover:bg-gray-100 transition-colors z-10 cursor-pointer">Lancer</button>
 		<div id="result" class="mt-4 text-xl font-semibold text-center z-10"></div>
 		<script>
 			const prizes = [
