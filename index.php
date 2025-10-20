@@ -51,21 +51,32 @@
 	</head>
 	<body class="bg-black text-white flex flex-col items-center justify-center h-screen font-saira min-h-screen overflow-hidden">
 		<!-- Gradient overlay -->
-		<div class="fixed inset-0 pointer-events-none z-0 opacity-60 bg-black"></div>
-		<img src="assets/images/logo.png" alt="On Air Fitness Logo" class="mb-14 w-48 md:w-64 z-10">
-		<div id="wheel-container" class="relative w-80 h-80 md:w-1/2 md:h-1/2 z-10">
-			<svg id="wheel" class="absolute w-full h-full" viewBox="0 0 100 100">
-				<!-- Thick black border -->
-				<circle cx="50" cy="50" r="48" stroke="white" stroke-width="2" fill="none" stroke-dasharray="1" />
-			</svg>
-			<div id="indicator-container" class="absolute inset-0" style="transform-origin: 50% 50%;">
-				<div id="indicator">
-					<img src="assets/images/indicator.svg" class="absolute top-3 left-1/2 transform -translate-x-1/2 w-6 glow"></img>
+		<div class="fixed inset-0 pointer-events-none z-0 opacity-60 bg-black text-center"></div>
+		<div id="survey-screen" class="flex flex-col items-center justify-center h-screen z-20 bg-black bg-opacity-80 absolute inset-0">
+			<img src="assets/images/logo.png" alt="On Air Fitness Logo" class="w-48 md:w-64 mb-8">
+			<p class="text-2xl md:text-3xl font-orbitron font-bold mb-6 text-white drop-shadow-lg tracking-wide text-center">Avant de participer,<br>merci de remplir le sondage !</p>
+			<a href="https://g.page/r/CVu3ttLuVipNEAI/review" target="_blank" class="m-6 font-orbitron text-center text-xl min-w-72 py-2 font-semibold bg-white text-espresso rounded-full hover:bg-gray-200 transition-colors z-50">Remplir le sondage</a>
+			<button id="survey-done" class="text-xl py-2 font-orbitron min-w-72 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-colors z-50">J'ai rempli le sondage</button>
+		</div>
+		<div id="game-screen" style="display:none;" class="flex flex-col items-center justify-center w-full h-full">
+			<img src="assets/images/logo.png" alt="On Air Fitness Logo" class="w-48 md:w-64 z-10">
+			<p class="text-2xl md:text-4xl font-orbitron font-bold my-8 text-white drop-shadow-lg tracking-wide z-30 text-center">
+				Tournez la roue pour gagner
+			</p>
+			<div id="wheel-container" class="relative w-80 h-80 md:w-1/2 md:h-1/2 z-10">
+				<svg id="wheel" class="absolute w-full h-full" viewBox="0 0 100 100">
+					<!-- Thick black border -->
+					<circle cx="50" cy="50" r="48" stroke="white" stroke-width="2" fill="none" stroke-dasharray="1" />
+				</svg>
+				<div id="indicator-container" class="absolute inset-0" style="transform-origin: 50% 50%;">
+					<div id="indicator">
+						<img src="assets/images/indicator.svg" class="absolute top-3 left-1/2 transform -translate-x-1/2 w-4 xl:w-6 glow"></img>
+					</div>
 				</div>
 			</div>
+			<button id="spin" class="mt-14 text-3xl min-w-72 py-1 font-orbitron bg-white text-espresso font-semibold rounded-full hover:bg-gray-200 transition-colors z-10 cursor-pointer">Lancer La Roue</button>
+			<div id="result" class="mt-4 text-xl font-semibold text-center z-10"></div>
 		</div>
-		<button id="spin" class="mt-14 text-3xl min-w-52 py-1 bg-white text-espresso font-semibold rounded-full hover:bg-gray-100 transition-colors z-10 cursor-pointer">Lancer</button>
-		<div id="result" class="mt-4 text-xl font-semibold text-center z-10"></div>
 		<script>
 			const prizes = [
 			  { name: "Gourde / Serviette", prob: 0.05 },
@@ -73,7 +84,7 @@
 			  { name: "Tshirt / On Air", prob: 0.04 },
 			  { name: "1 mois / offert", prob: 0.01 },
 			  { name: "Protein / drink", prob: 0.10 },
-			  { name: "Oups !", prob: 0.60 },
+			  { name: "Oups!", prob: 0.60 },
 			];
 			const colors = ['#87221d', '#bf0007', '#5c1b18', '#fc002f'];
 			const numSlices = prizes.length;
@@ -124,15 +135,19 @@
 			
 			// Initialize wheel
 			const svg = document.getElementById('wheel');
+			const wheelGroup = document.createElementNS(svgNS, 'g');
+			wheelGroup.id = 'wheel-group';
+			svg.appendChild(wheelGroup);
+			wheelGroup.style.transformOrigin = '50% 50%';
 			let startAngle = 0;
 			for (let i = 0; i < numSlices; i++) {
 			  const endAngle = startAngle + sliceAngle;
 			  const color = colors[i % colors.length];
 			  const sector = createSector(centerX, centerY, radius, startAngle, endAngle, color);
-			  svg.appendChild(sector);
+			  wheelGroup.appendChild(sector);
 			  const centerAngle = startAngle + sliceAngle / 2;
 			  const text = createText(centerX, centerY, radius, centerAngle, prizes[i].name);
-			  svg.appendChild(text);
+			  wheelGroup.appendChild(text);
 			  startAngle = endAngle;
 			}
 			
@@ -153,7 +168,7 @@
 			  const deltaTime = (timestamp - lastTimestamp) / 1000; // Time in seconds
 			  const rotationSpeed = 720; // Degrees per second, increased for testing
 			  currentRotation += rotationSpeed * deltaTime;
-			  indicatorContainer.style.transform = `rotate(${currentRotation}deg)`;
+			  wheelGroup.style.transform = `rotate(${-currentRotation}deg)`;
 			  lastTimestamp = timestamp;
 			  if (spinning) {
 			    animationFrameId = requestAnimationFrame(continuousSpin);
@@ -181,7 +196,7 @@
 			    // Stop spinning and transition to target
 			    cancelAnimationFrame(animationFrameId);
 			    spinning = false;
-			    spinButton.textContent = 'Lancer';
+			    spinButton.textContent = 'Lancer La Roue';
 			    const winnerIndex = getRandomPrize();
 			    let centerAngle = (sliceAngle / 2) + (sliceAngle * winnerIndex);
 			    centerAngle += (Math.random() - 0.5) * sliceAngle;
@@ -194,14 +209,14 @@
 			    const totalRotation = currentRotation + totalAdditional;
 			    const rotationSpeed = 400; // Degrees per second, matches continuous spin
 			    const duration = Math.max(totalAdditional / rotationSpeed, 1); // Minimum 3 seconds
-			    indicatorContainer.style.transition = `transform ${duration}s ease-out`;
-			    indicatorContainer.style.transform = `rotate(${totalRotation}deg)`;
-			    indicatorContainer.addEventListener('transitionend', () => {
+			    wheelGroup.style.transition = `transform ${duration}s ease-out`;
+			    wheelGroup.style.transform = `rotate(${-totalRotation}deg)`;
+			    wheelGroup.addEventListener('transitionend', () => {
 			      currentRotation = totalRotation % 360;
-			      indicatorContainer.style.transition = 'transform 0s';
-			      indicatorContainer.style.transform = `rotate(${currentRotation}deg)`;
-			      if (prizes[winnerIndex].name === "Oups !") {
-			        resultDiv.textContent = `🙁 Oups ! Pas de chance !`;
+			      wheelGroup.style.transition = 'transform 0s';
+			      wheelGroup.style.transform = `rotate(${-currentRotation}deg)`;
+			      if (prizes[winnerIndex].name === "Oups!") {
+			        resultDiv.textContent = `🙁 Oups! Pas de chance !`;
 			      } else {
 			        resultDiv.textContent = `🎉 Vous avez gagné : ${prizes[winnerIndex].name}`;
 			      }
@@ -211,6 +226,16 @@
 			      }, 900);
 			    }, { once: true });
 			  }
+			});
+
+			// Survey done logic
+			const surveyScreen = document.getElementById('survey-screen');
+			const gameScreen = document.getElementById('game-screen');
+			const surveyDoneButton = document.getElementById('survey-done');
+
+			surveyDoneButton.addEventListener('click', () => {
+			  surveyScreen.style.display = 'none';
+			  gameScreen.style.display = 'flex';
 			});
 		</script>
 	</body>
