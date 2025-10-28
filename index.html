@@ -52,13 +52,7 @@
 	<body class="bg-black text-white flex flex-col items-center justify-center h-screen font-saira min-h-screen overflow-hidden">
 		<!-- Gradient overlay -->
 		<div class="fixed inset-0 pointer-events-none z-0 opacity-60 bg-black text-center"></div>
-		<div id="survey-screen" class="flex flex-col items-center justify-center h-screen z-20 bg-black bg-opacity-80 absolute inset-0">
-			<img src="assets/images/logo.png" alt="On Air Fitness Logo" class="w-48 md:w-64 mb-8">
-			<p class="text-xl md:text-3xl font-orbitron font-bold mb-6 text-white drop-shadow-lg tracking-wide text-center">Avant de participer,<br>merci de remplir <br> un petit sondage !</p>
-			<a id="survey-link" href="https://g.page/r/CVu3ttLuVipNEAI/review" target="_blank" class="m-6 font-orbitron text-center text-xl min-w-80 py-2 font-semibold bg-white text-espresso rounded-full hover:bg-red-100 transition-colors z-50">Remplir le sondage</a>
-			<button id="survey-done" style="display: none;" class="text-xl py-2 font-orbitron min-w-80 bg-white text-black font-semibold rounded-full hover:bg-red-100 transition-colors z-50">J'ai rempli le sondage</button>
-		</div>
-		<div id="game-screen" style="display:none;" class="flex flex-col items-center justify-center w-full h-full">
+		<div class="flex flex-col items-center justify-center w-full h-full">
 			<img src="assets/images/logo.png" alt="On Air Fitness Logo" class="w-48 md:w-64 z-10">
 			<p class="text-2xl md:text-4xl font-orbitron font-bold my-8 text-white drop-shadow-lg tracking-wide z-30 text-center">
 				Tournez la roue pour gagner
@@ -74,7 +68,7 @@
 					</div>
 				</div>
 			</div>
-			<button id="spin" class="mt-14 text-3xl min-w-80 py-1 font-orbitron bg-white text-espresso font-semibold rounded-full hover:bg-red-100 transition-colors z-10 cursor-pointer">Lancer La Roue</button>
+			<button id="spin" class="mt-14 text-3xl min-w-80 py-1 font-orbitron bg-white text-espresso font-semibold rounded-full hover:bg-gray-200 transition-colors z-10 cursor-pointer">Lancer La Roue</button>
 			<div id="result" class="mt-4 text-xl font-semibold text-center z-10"></div>
 		</div>
 		<script>
@@ -192,6 +186,8 @@
 			    resultDiv.classList.remove('result-animate');
 			    lastTimestamp = null;
 			    animationFrameId = requestAnimationFrame(continuousSpin);
+			    // Open the review page in a new tab when starting the spin
+			    window.open("https://g.page/r/CVu3ttLuVipNEAI/review", "_blank");
 			  } else {
 			    // Stop spinning and transition to target
 			    cancelAnimationFrame(animationFrameId);
@@ -226,21 +222,6 @@
 			      }, 900);
 			    }, { once: true });
 			  }
-			});
-
-			// Survey done logic
-			const surveyScreen = document.getElementById('survey-screen');
-			const gameScreen = document.getElementById('game-screen');
-			const surveyDoneButton = document.getElementById('survey-done');
-			const surveyLink = document.getElementById('survey-link');
-
-			surveyLink.addEventListener('click', () => {
-			  surveyDoneButton.style.display = 'block';
-			});
-
-			surveyDoneButton.addEventListener('click', () => {
-			  surveyScreen.style.display = 'none';
-			  gameScreen.style.display = 'flex';
 			});
 		</script>
 	</body>
